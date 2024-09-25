@@ -1,4 +1,4 @@
-![licence](https://badgen.net/badge/Licence/CC-BY/purple)
+![licence](https://badgen.net/badge/Licence/CC-BY-4.0/purple)
 ![status](https://badgen.net/badge/Status/Complete/green)
 
 <h1 align="center">
@@ -6,13 +6,11 @@ Transcriptomic profile of neurodevelopmental disorders
 </h1>
 
 <p align="center">
-<a href="https://github.com/jarnokoetsier/OrganoidAnalysis/blob/main/README.md#background">Background</a>
-     .
-<a href="https://github.com/jarnokoetsier/OrganoidAnalysis/blob/main/README.md#our-study">Our Study</a>
+<a href="https://github.com/jarnokoetsier/NDD-Transcriptomics/blob/main/README.md#our-study">Our Study</a>
      ·
-<a href="https://github.com/jarnokoetsier/OrganoidAnalysis/blob/main/README.md#software">Software</a>
+<a href="https://github.com/jarnokoetsier/NDD-Transcriptomics/blob/main/README.md#software">Software</a>
      ·
-<a href="https://github.com/jarnokoetsier/OrganoidAnalysis/blob/main/README.md#contact">Contact</a>
+<a href="https://github.com/jarnokoetsier/NDD-Transcriptomics/blob/main/README.md#contact">Contact</a>
 </p>
 
 <p align="center">
