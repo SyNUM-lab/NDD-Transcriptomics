@@ -1,0 +1,10 @@
+*.RData
+*.cys
+*.csv
+.Rhistory
+*.pptx
+*.png
+*.txt
+*.xlsx
+*.tsv
+Data/*
