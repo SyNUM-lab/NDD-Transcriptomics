@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("D:/RTTproject/GEOData/Analysis")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -25,7 +25,7 @@ firstup <- function(x) {
 }
 
 # Select phenotype of interest
-selPheno <- "Seizure"
+selPheno <- "Hypotonia"
 selSamples <- metaData_all$ID[metaData_all[,selPheno] == 1]
 selGenes <- rownames(pvalue_matrix)[rowSums(pvalue_matrix[,selSamples]<0.05, na.rm = TRUE) > 10]
 
@@ -108,7 +108,6 @@ stat_all <- data.frame(
 stat_all <- inner_join(stat_all, geneInfo[,1:2],
                        by = c("GeneID" = "GeneID"))
 
-
 # Which genes to include in the plot?
 sigGenes <- c(rownames(head(arrange(stat_both[stat_both$Estimate > 1,], by = Pvalue),5)),
               rownames(head(arrange(stat_pos[stat_pos$Estimate > 1,], by = Pvalue),5)),
@@ -123,6 +122,8 @@ plotDF <- data.frame(
   OR = c(stat_all$Both_OR, stat_all$Neg_OR, stat_all$Pos_OR),
   Stat = rep(c("Both", "Downregulated", "Upregulated"), each = length(selGenes))
 )
+
+topGene <- plotDF[plotDF$OR > 1,]
 
 plotDF$Stat <- factor(plotDF$Stat, levels = rev(c("Both", "Downregulated", "Upregulated")))
 plotDF <- plotDF[plotDF$GeneID %in% sigGenes,]

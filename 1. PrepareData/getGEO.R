@@ -9,7 +9,7 @@ library(GEOquery)
 library(tidyverse)
 
 # Set working directory
-setwd("D:/RTTproject/GEOData/Analysis")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 
 # https://wires.onlinelibrary.wiley.com/doi/full/10.1002/wcs.1398

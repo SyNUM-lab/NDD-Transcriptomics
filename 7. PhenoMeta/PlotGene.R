@@ -5,7 +5,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("D:/RTTproject/GEOData/Analysis")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -19,7 +19,15 @@ load("Data/CleanData/geneInfo.RData")
 
 # Select gene and phenotype of interest
 selGene <- "3975" # LHX1
+selGene <- "2556" # GABRA3
+selGene <- "5630" # PRPH
 selPheno <- "Seizure"
+
+selGene <- "64968"
+selGene <- "51227"
+selGene <- "2114"
+selPheno <- "Hypotonia"
+
 selSamples <- metaData_all$ID[metaData_all[,selPheno] == 1]
 name <- geneInfo$Symbol[geneInfo$GeneID == selGene]
 
@@ -71,3 +79,44 @@ p <- ggplot(plotDF) +
                                   size = 12))
 # Save plot
 ggsave(p, file = "7. PhenoMeta/Gene_Pheno/LHX1.png", width = 6, height = 4)
+
+
+
+
+# Make an alternative plot
+plotDF_alt <- plotDF
+plotDF_alt <- arrange(plotDF_alt, by = logFC)
+plotDF_alt$Dataset <- factor(plotDF_alt$Dataset, 
+                             levels = unique(plotDF_alt$Dataset))
+
+# Set colors
+colors <- setNames(c("#BDBDBD", RColorBrewer::brewer.pal(n = 8, name = "Set2")),
+                   c(paste0("No ", selPheno),"Intellectual disability", "Hypotonia", 
+                     "Global developmental delay",
+                     "Microcephaly", "Gait ataxia", "Autism/Autistic Behavior",
+                     "Seizure", "Scoliosis"))
+
+# Make plot
+p <- ggplot(plotDF_alt) +
+  geom_point(aes(x = Dataset, y = logFC, 
+                 color = Pheno)) +
+  geom_segment(aes(x = Dataset, xend = Dataset, y = Lower, yend = Upper, 
+                   color = Pheno)) +
+  ylab(expression(log[2]~"FC")) +
+  xlab("Datasets") +
+  scale_color_manual(values = colors) +
+  ggtitle(name) +
+  theme_bw() +
+  theme(legend.position = "none",
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        plot.title = element_text(hjust = 0.5,
+                                  face = "bold",
+                                  size = 16),
+        strip.text = element_text(hjust = 0.5,
+                                  face = "bold",
+                                  size = 12))
+
+
+ggsave(p, file = "7. PhenoMeta/Gene_Pheno/LHX1_alt.png", width = 6, height = 4)
+

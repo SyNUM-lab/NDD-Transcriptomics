@@ -5,7 +5,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("D:/RTTproject/GEOData/Analysis")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)

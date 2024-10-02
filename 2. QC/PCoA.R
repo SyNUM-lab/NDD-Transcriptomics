@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("D:/RTTproject/GEOData/Analysis")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -39,14 +39,14 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("D:/RTTproject/GEOData/Analysis")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
 
 # Load data
 load("2. QC/PCoA/corMatrix.RData")
-metaData <- readxl::read_excel("Data/CleanData/MetaData_clean.xlsx")
+load("Data/CleanData/metaData_all.RData")
 geneInfo <- data.table::fread("Data/CleanData/Human.GRCh38.p13.annot.tsv")
 load("Data/CleanData/statistics_matrix.RData")
 logFC_matrix[is.na(logFC_matrix)] <- 0
@@ -68,9 +68,9 @@ pca <- prcomp(corMatrix_scaled,
 expl_var <- round((pca$sdev^2)/sum(pca$sdev^2),3)
 
 # Combine sample info in PCA scores
-plotPCA <- as.data.frame(pca$x)
+plotPCA <- as.data.frame(pca$x)[1:5]
 plotPCA$studyID <- rownames(plotPCA)
-plotPCA <- inner_join(plotPCA, metaData, by = c("studyID" = "ID"))
+plotPCA <- inner_join(plotPCA, metaData_all, by = c("studyID" = "ID"))
 
 
 # Neural cells
