@@ -49,13 +49,13 @@ for (i in 1:length(terms_ordered)){
 testDF <- data.frame(gene = gene,
                      value = value,
                      GO = terms_ordered)
-table(gene)
+testDF <- inner_join(testDF, clusterDF, by = c("GO" = "ID"))
 
 # Select gene of interest
-selGene <- "351"
-selGene <- "6622"
-selGene <- "3106"
-selGene <- "2114"
+selGene <- "3106" # cluster A: 45 HLA-A
+selGene <- "6451" # cluster B: 36 SH3BGRL
+selGene <- "6622" # cluster C 39 SNCA
+selGene <- "351" # cluster D: 44 APP
 
 # Prepare logFC and SE matrix
 logFC_matrix1 <- logFC_matrix
@@ -108,7 +108,7 @@ ggsave(p, file = paste0("5. OverallMeta/Gene/",geneName, "_logFCs.png"), width =
 
 # Link genes to GO term
 networkDF <- NULL
-netGenes <- c("351", "6622", "3106", "2114")
+netGenes <- c("351", "6622", "3106", "6451")
 GOgenes_fil <- GOgenes[terms_ordered]
 for (g in 1:length(netGenes)){
   for (t in 1:length(GOgenes_fil)){
@@ -154,7 +154,7 @@ g <- graph_from_data_frame(edges,
 # Export graph into Cytoscape
 createNetworkFromIgraph(
   g,
-  title = "GO network",
+  title = "GO network2",
   collection = "Genes"
 )
 
