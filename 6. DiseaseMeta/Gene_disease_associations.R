@@ -74,7 +74,7 @@ save(outputDF, file = "6. DiseaseMeta/Gene/outputDF_DS.RData")
 
 ################################################################################
 
-disease <- "DMD"
+disease <- "RTT"
 
 # Load data
 load(paste0("6. DiseaseMeta/Gene/outputDF_",disease,".RData"))
@@ -84,6 +84,14 @@ outputDF <- outputDF[!is.na(outputDF$Pvalue),]
 outputDF$Gene <- as.character(outputDF$Gene)
 geneInfo$GeneID <- as.character(geneInfo$GeneID)
 outputDF <- left_join(outputDF, geneInfo, by = c("Gene" = "GeneID"))
+
+# Export statistics in .csv format
+exportCSV <- unique(outputDF[,c("Symbol", "Gene","EnsemblGeneID", "Statistic", 
+                                "Lower", "Upper","Pvalue")])
+colnames(exportCSV) <- c("HGNC", "ENTREZ", "ENSEMBL", "Statistic", "Lower",
+                         "Upper", "Pvalue")
+write.csv(exportCSV,file = paste0("6. DiseaseMeta/Gene/MetaAnalysis_", disease, ".csv"),
+          row.names = FALSE)
 
 # For DS: exclude chromosome 21 genes
 #outputDF <- outputDF[outputDF$ChrName != "21",]

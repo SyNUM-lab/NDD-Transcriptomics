@@ -75,6 +75,7 @@ plotDF <- data.frame(
   OR=log2(OR),
   lw=lw,
   up=up,
+  pvalue = pvalue,
   gene = selGenes
 )
 

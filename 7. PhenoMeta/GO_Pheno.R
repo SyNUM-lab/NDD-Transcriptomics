@@ -78,9 +78,9 @@ load("7. PhenoMeta/GO_Pheno/GSEAassociations.RData")
 # Get significant GO terms
 sigGOs <- pvalues$ID[rowSums(pvalues[,3:153]<0.05) > 5]
 sig_p_fil <- sig_p[rownames(sig_p) %in% sigGOs,1:8]
-sig_p_adj <- apply(sig_p_fil,2,p.adjust)
+sig_p_adj <- apply(sig_p_fil,2,function(x) p.adjust(x, method = "fdr"))
 nes_p_fil <- nes_p[rownames(nes_p) %in% sigGOs,1:8]
-nes_p_adj <- apply(nes_p_fil,2,p.adjust)
+nes_p_adj <- apply(nes_p_fil,2, function(x) p.adjust(x, method = "fdr"))
 
 # Selected term: "Ceberellar Purkinje cell layer formation"
 selTerm <- "GO:0021694"

@@ -54,3 +54,13 @@ p <- ggplot(plotDF) +
 # Save plot
 ggsave(p, file = "5. OverallMeta/OxPhos/OxPhos.png",
        width = 10, height = 4)
+
+
+# Find which datasets have the highest peaks
+plotDF_fil <- plotDF[plotDF$Mito == "Mitochondrial",]
+plotDF_fil <- plotDF_fil %>%
+  dplyr::group_by(key) %>%
+  summarize(medianVal = median(value))
+plotDF_fil <- inner_join(plotDF_fil, metaData_all, by = c("key" = "ID"))
+
+
