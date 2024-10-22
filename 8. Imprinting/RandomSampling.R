@@ -63,7 +63,7 @@ Q4imp <- sum(which(names(medianExpr) %in% imprinted_genes1)/length(medianExpr) <
 
 
 # Perform permuations analysis
-nperm <- 500
+nperm <- 1000
 results_up <- matrix(NA,nrow = length(both_genes), ncol = nperm)
 results_down <- matrix(NA,nrow = length(both_genes), ncol = nperm)
 results_both <- matrix(NA,nrow = length(both_genes), ncol = nperm)
@@ -166,5 +166,5 @@ for (c in 1:ncol(results_both)){
 
 # Save results
 save(results_both, results_down, results_up,
-     file = "8. Imprinting/PermResults.RData")
+     file = "8. Imprinting/PermResults1.RData")
 
