@@ -121,12 +121,18 @@ for (d in 1:length(both_genes)){
 # Format data
 colnames(results_both) <- c("Pvalue", "OR", "Lower", "Upper")
 rownames(results_both) <- names(topList)
+plotDF_both <- as.data.frame(results_both)
+plotDF_both$StudyID <- rownames(results_both)
 
 colnames(results_down) <- c("Pvalue", "OR", "Lower", "Upper")
 rownames(results_down) <- names(topList)
+plotDF_down <- as.data.frame(results_down)
+plotDF_down$StudyID <- rownames(results_down)
 
 colnames(results_up) <- c("Pvalue", "OR", "Lower", "Upper")
 rownames(results_up) <- names(topList)
+plotDF_up <- as.data.frame(results_up)
+plotDF_up$StudyID <- rownames(results_up)
 
 #==============================================================================#
 # Make plot
@@ -135,14 +141,12 @@ rownames(results_up) <- names(topList)
 # Odds of differential expression:
 
 # Format data for plotting
-plotDF_both <- as.data.frame(results_both)
-plotDF_both$StudyID <- rownames(results_both)
 plotDF_both <- inner_join(plotDF_both, metaData_all, by = c("StudyID" = "ID"))
 plotDF_both <- arrange(plotDF_both, by = OR)
 plotDF_both$x <- 1:nrow(plotDF_both)
 
 # Load random permutations
-load("8. Imprinting/PermResults.RData")
+load("8. Imprinting/PermResults1.RData")
 plotDF_perm <- gather(as.data.frame(results_both))
 plotDF_perm$x <- rep(1:nrow(results_both), ncol(results_both))
 
@@ -170,14 +174,12 @@ ggsave(p, file = "8. Imprinting/Figures/OR_imprinting.png", width = 8, height = 
 # Odds of downregulation:
 
 # Format data for plotting
-plotDF_down <- as.data.frame(results_down)
-plotDF_down$StudyID <- rownames(results_down)
 plotDF_down <- inner_join(plotDF_down, metaData_all, by = c("StudyID" = "ID"))
 plotDF_down <- arrange(plotDF_down, by = OR)
 plotDF_down$x <- 1:nrow(plotDF_down)
 
 # Load random permutations
-load("8. Imprinting/PermResults.RData")
+load("8. Imprinting/PermResults1.RData")
 plotDF_perm <- gather(as.data.frame(results_down))
 plotDF_perm$x <- rep(1:nrow(results_down), ncol(results_down))
 
@@ -206,14 +208,12 @@ ggsave(p, file = "8. Imprinting/Figures/OR_imprinting_down.png", width = 8, heig
 # Odds of upregulation:
 
 # Format data for plotting
-plotDF_up <- as.data.frame(results_up)
-plotDF_up$StudyID <- rownames(results_up)
 plotDF_up <- inner_join(plotDF_up, metaData_all, by = c("StudyID" = "ID"))
 plotDF_up <- arrange(plotDF_up, by = OR)
 plotDF_up$x <- 1:nrow(plotDF_up)
 
 # Load random permutations
-load("8. Imprinting/PermResults.RData")
+load("8. Imprinting/PermResults1.RData")
 plotDF_perm <- gather(as.data.frame(results_up))
 plotDF_perm$x <- rep(1:nrow(results_down), ncol(results_up))
 
