@@ -20,6 +20,8 @@ This repository contains the scripts of the project <i>"Transcriptomic profile o
 
 ## Our Study
 We combined the RNA-sequencing data of 115 dinstinct neurodevelopmental disorder datasets (Gene Expression Omnibus, GEO) to identify common, disease-specific, and phenotype-specific transcriptomic alterations.
+## Website
+You can interactively explore the data on shinyapps.io/jarnokoetsier/NDDtranscriptomics
 ## Software
 * `R version 4.3.1.`
 * `RStudio version 2024.04.0+735`
