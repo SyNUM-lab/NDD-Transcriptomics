@@ -2,7 +2,7 @@
 ![status](https://badgen.net/badge/Status/Complete/green)
 
 <h1 align="center">
-Transcriptomic profile of neurodevelopmental disorders
+Decoding the Transcriptomics Landscape of Neurodevelopmental Disorders: A Meta-analysis
 </h1>
 
 <p align="center">
@@ -13,15 +13,12 @@ Transcriptomic profile of neurodevelopmental disorders
 <a href="https://github.com/jarnokoetsier/NDD-Transcriptomics/blob/main/README.md#contact">Contact</a>
 </p>
 
-<p align="center">
-This repository contains the scripts of the project <i>"Transcriptomic profile of neurodevelopmental disorders"</i>.
-</p>
 <br>
 
 ## Our Study
-We combined the RNA-sequencing data of 115 dinstinct neurodevelopmental disorder datasets (Gene Expression Omnibus, GEO) to identify common, disease-specific, and phenotype-specific transcriptomic alterations.
+We combined the RNA-sequencing data of 115 distinct neurodevelopmental disorder datasets (Gene Expression Omnibus, GEO) to identify common, disease-specific, and phenotype-specific transcriptomic alterations.
 ## Website
-You can interactively explore the data on https://shinyapps.io/jarnokoetsier/NDDtranscriptomics
+You can interactively explore the data at https://www.shinyapps.io/jarnokoetsier/NDDtranscriptomics
 ## Software
 * `R version 4.3.1.`
 * `RStudio version 2024.04.0+735`
