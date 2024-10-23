@@ -90,7 +90,7 @@ p <- ggplot(plotDF) +
         axis.title.y = element_text(face = "bold", angle = 90, size = 15))
 
 # save plot
-ggsave(p, file = "10. scRNAseq/Lhx1_UMAP.png",
+ggsave(p, file = "10. snRNAseq/Lhx1_UMAP.png",
        width = 6, height = 6)
 
 # Make plot of cell type markers
@@ -131,7 +131,7 @@ for (i in 1:length(selGenes)){
 finalPlot <- finalPlot + patchwork::plot_layout(ncol = 3, nrow = 5)
 
 # Save plot
-ggsave(finalPlot, file = "10. scRNAseq/QC_UMAP.png",
+ggsave(finalPlot, file = "10. snRNAseq/QC_UMAP.png",
        width = 10, height = 12)
 
 
