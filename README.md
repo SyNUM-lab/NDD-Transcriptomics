@@ -18,7 +18,7 @@ Decoding the Transcriptomics Landscape of Neurodevelopmental Disorders: A Meta-a
 ## Our Study
 We combined the RNA-sequencing data of 115 distinct neurodevelopmental disorder datasets (Gene Expression Omnibus, GEO) to identify common, disease-specific, and phenotype-specific transcriptomic alterations.
 ## Website
-You can interactively explore the data at https://www.shinyapps.io/jarnokoetsier/NDDtranscriptomics
+You can interactively explore the data at <a href="https://www.shinyapps.io/jarnokoetsier/NDDtranscriotomics">our website</a>
 ## Software
 * `R version 4.3.1.`
 * `RStudio version 2024.04.0+735`
