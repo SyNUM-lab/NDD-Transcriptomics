@@ -67,7 +67,7 @@ seurat <- RunUMAP(seurat, dims = 1:6)
 save(seurat, file = "7. PhenoMeta/scRNAseq/seurat1.RData")
 
 # Continue with saved data
-load("10. snRNAseq/seurat1.RData")
+load("7. PhenoMeta/scRNAseq/seurat1.RData")
 
 # Extract expression
 test <- seurat@assays$RNA$data["Lhx1",]
