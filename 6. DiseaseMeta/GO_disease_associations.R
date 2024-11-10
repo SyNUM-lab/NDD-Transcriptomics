@@ -16,6 +16,7 @@ library(meta)
 load("Data/CleanData/topList.RData")
 load("Data/CleanData/metaData_all.RData")
 load("4. GSEA/GSEA_GO/GSEAresults_GO.RData")
+load("4. GSEA/GOgenes_BP_ENTREZID_Hs.RData")
 
 # Capitalize first letter
 firstup <- function(x) {
@@ -33,10 +34,15 @@ firstup <- function(x) {
 
 # Select disease
 disease <- "DMD"
+terms <- names(GOgenes)[unlist(lapply(GOgenes, function(x) sum(str_detect(x, "1756"))==0))]
+
+disease <- "FXS"
+terms <- names(GOgenes)[unlist(lapply(GOgenes, function(x) sum(str_detect(x, "2332"))==0))]
+
 samples <- metaData_all$ID[metaData_all$`Disease abbreviation` == disease]
-NES_fil <- NES[,c("ID", "Description", samples)]
+NES_fil <- NES[NES$ID %in% terms,c("ID", "Description", samples)]
 NES_fil[is.na(NES_fil)] <- 1
-pvalues_fil <- pvalues[,c("ID", "Description", samples)]
+pvalues_fil <- pvalues[pvalues$ID %in% terms,c("ID", "Description", samples)]
 pvalues_fil[is.na(pvalues_fil)] <- 1
 
 # number of significant datasets
@@ -72,7 +78,7 @@ disease <- "DMD"
 
 # DMD
 GOterm <- "kidney development"
-GOterm <- "sarcoplasmic reticulum calcium ion transport"
+GOterm <- "cardiac chamber development"
 
 # DS
 GOterm <- "detoxification"
@@ -83,8 +89,8 @@ GOterm <- "wound healing"
 GOterm <- "axonogenesis"
 
 # FXS:
-GOterm <- "regulation of neurotransmitter secretion"
-GOterm <- "positive regulation of post-transcriptional gene silencing"
+GOterm <- "positive regulation of interleukin-1 beta production"
+GOterm <- "cell-cell adhesion via plasma-membrane adhesion molecules"
 
 # Make data frame for disease plotting
 pvalues[is.na(pvalues)] <- 1
@@ -133,6 +139,6 @@ p <- ggplot(plotDF[plotDF$Disease != "Other",]) +
         plot.title = element_text(face = "bold", size = 10, hjust = 0.5))
 
 # Save plot
-ggsave(p, file = paste0("6. DiseaseMeta/GO/", disease, "_GSEA_small1.png"), 
+ggsave(p, file = paste0("6. DiseaseMeta/GO/", disease, "_GSEA_small2.png"), 
        width = 2, height = 7)
 

@@ -64,7 +64,7 @@ seurat <- FindClusters(seurat, resolution = 0.5)
 
 # Perform UMAP
 seurat <- RunUMAP(seurat, dims = 1:6)
-save(seurat, file = "10. snRNAseq/seurat1.RData")
+save(seurat, file = "7. PhenoMeta/scRNAseq/seurat1.RData")
 
 # Continue with saved data
 load("10. snRNAseq/seurat1.RData")
@@ -90,7 +90,7 @@ p <- ggplot(plotDF) +
         axis.title.y = element_text(face = "bold", angle = 90, size = 15))
 
 # save plot
-ggsave(p, file = "10. snRNAseq/Lhx1_UMAP.png",
+ggsave(p, file = "7. PhenoMeta/scRNAseq/Lhx1_UMAP.png",
        width = 6, height = 6)
 
 # Make plot of cell type markers
@@ -131,7 +131,7 @@ for (i in 1:length(selGenes)){
 finalPlot <- finalPlot + patchwork::plot_layout(ncol = 3, nrow = 5)
 
 # Save plot
-ggsave(finalPlot, file = "10. snRNAseq/QC_UMAP.png",
+ggsave(finalPlot, file = "7. PhenoMeta/scRNAseq/QC_UMAP.png",
        width = 10, height = 12)
 
 
