@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -75,12 +75,19 @@ save(sig_p, nes_p, file = "7. PhenoMeta/GO_Pheno/GSEAassociations.RData")
 # Load (if not already loaded)
 load("7. PhenoMeta/GO_Pheno/GSEAassociations.RData")
 
-# Get significant GO terms
+# Get adj. P value (unsigned -log10 P value)
+sig_p_adj <- apply(sig_p,2,function(x) p.adjust(x, method = "fdr"))
+
+# Only look at GO terms that are significant in five datasets
 sigGOs <- pvalues$ID[rowSums(pvalues[,3:153]<0.05) > 5]
-sig_p_fil <- sig_p[rownames(sig_p) %in% sigGOs,1:8]
-sig_p_adj <- apply(sig_p_fil,2,function(x) p.adjust(x, method = "fdr"))
-nes_p_fil <- nes_p[rownames(nes_p) %in% sigGOs,1:8]
-nes_p_adj <- apply(nes_p_fil,2, function(x) p.adjust(x, method = "fdr"))
+sig_p_adj <- sig_p_adj[rownames(sig_p_adj) %in% sigGOs,1:8]
+
+# Get adj. P value (signed -log10 P value)
+nes_p_adj <- apply(nes_p,2, function(x) p.adjust(x, method = "fdr"))
+
+# Only look at GO terms that are significant in five datasets
+sigGOs <- pvalues$ID[rowSums(pvalues[,3:153]<0.05) > 5]
+nes_p_adj <- nes_p_adj[rownames(nes_p_adj) %in% sigGOs,1:8]
 
 # Selected term: "Ceberellar Purkinje cell layer formation"
 selTerm <- "GO:0021694"
@@ -133,7 +140,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("D:/RTTproject/GEOData/Analysis")
+setwd("E:/RTTproject/GEOData/Analysis")
 
 # Load data
 load("4. GSEA/GOgenes_BP_ENTREZID_Hs.RData")

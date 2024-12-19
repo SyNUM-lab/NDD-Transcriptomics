@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -71,7 +71,7 @@ save(outputDF, file = "6. DiseaseMeta/Gene/outputDF_FXS.RData")
 
 ################################################################################
 
-# Make plot: repeat for DS, DMD, RTT, and FX
+# Make gene logFC plot: repeat for DS, DMD, RTT, and FX
 
 ################################################################################
 
@@ -129,7 +129,7 @@ colors <- c(diseaseColors[disease], "#737373")
 names(colors) <- c("a", "b")
 plotDF$BG <- ifelse(plotDF$`Disease abbreviation`==disease,Inf,0)
 
-# Make plot
+# Make plot (Vertical)
 p <- ggplot(plotDF[plotDF$Disease != "Other",]) +
   geom_rect(aes(ymin = -Inf, ymax = Inf, 
             xmin = -BG, xmax = BG), 
@@ -155,7 +155,7 @@ ggsave(p, file = paste0("6. DiseaseMeta/Gene/", disease, ".png"),
        width = 3, height = 7)
 
 
-
+# Make plot (Horizontal)
 p <- ggplot(plotDF[plotDF$Disease != "Other",]) +
   geom_rect(aes(xmin = -Inf, xmax = Inf, 
                 ymin = -BG, ymax = BG), 
@@ -183,28 +183,11 @@ ggsave(p, file = paste0("6. DiseaseMeta/Gene/", disease, "horizontal.png"),
 
 
 
+################################################################################
 
+# Make Manhattan plot: repeat for DS, DMD, RTT, and FX
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+################################################################################
 
 disease <- "DS"
 
@@ -300,98 +283,6 @@ ggsave(p, file = paste0("6. DiseaseMeta/Gene/", disease, "Manhattan.png"),
 
 
 
-
-disease <- "DS"
-
-# Load data
-load(paste0("6. DiseaseMeta/Gene/outputDF_",disease,".RData"))
-
-# Prepare data
-outputDF <- outputDF[!is.na(outputDF$Pvalue),]
-outputDF$Gene <- as.character(outputDF$Gene)
-outputDF$Pvalue <- as.numeric(outputDF$Pvalue)
-outputDF$Statistic <- as.numeric(outputDF$Statistic)
-outputDF$logFC <- as.numeric(outputDF$logFC)
-outputDF$Lower <- as.numeric(outputDF$Lower)
-outputDF$Upper <- as.numeric(outputDF$Upper)
-
-
-geneInfo$GeneID <- as.character(geneInfo$GeneID)
-outputDF <- left_join(outputDF, geneInfo, by = c("Gene" = "GeneID"))
-
-outputDF$ChrStart <- as.numeric(outputDF$ChrStart)
-outputDF$ChrName[outputDF$ChrAcc == "NC_012920.1"] <- "MT"
-outputDF <- outputDF[!is.na(outputDF$ChrName),]
-outputDF <- outputDF[!(outputDF$ChrName) %in% c("Y", "MT"),]
-
-outputDF$ChrName <- factor(outputDF$ChrName,
-                           levels = c("1", "2", "3", "4", "5","6", "7", "8",
-                                      "9", "10", "11", "12", "13", "14", "15",
-                                      "16", "17", "18", "19", "20", "21", "22",
-                                      "X", "Y", "MT"))
-outputDF$Sig <- ifelse(outputDF$Pvalue < 0.05, "Yes", "No")
-
-plot_chr21 <- outputDF[outputDF$ChrName == "21",]
-colors <- setNames(c("#E6AB02","#737373"),
-                   c("Yes", "No"))
-
-p <- ggplot(plot_chr21) +
-  geom_vline(xintercept = 0) +
-  # geom_rect(xmin = -Inf, xmax = log2(1.5), ymin = -Inf, ymax = Inf, fill = "#feedbd", alpha = 0.01) +
-  # geom_rect(xmax = Inf, xmin = log2(1.5), ymin = -Inf, ymax = Inf, fill = "#D9D9D9", alpha = 0.015) +
-  geom_point(aes(y = ChrStart, x = logFC, color = logFC)) +
-  geom_segment(aes(y = ChrStart, yend = ChrStart, x = Lower, xend = Upper,
-                   color = logFC)) +
-  #geom_vline(xintercept = 0.35, linetype = "dashed", color = "#8B8000") +
-  scale_color_gradient(low = "#737373", high = "#E6AB02") +
-  #scale_color_manual(values = colors) +
-  ylab("Location on chromosome 21 (bp)") +
-  xlab(expression(log[2]~"FC")) +
-  theme_bw() +
-  theme(legend.position = "none",
-        axis.text.y = element_blank())
-
-ggsave(p, file = paste0("6. DiseaseMeta/Gene/", disease, "_Chr21.png"), 
-       width = 2, height = 8)
-
-
-
-colors <- setNames(c(rep(c(mainColor,"#737373"),12),mainColor,
-                     rep(c(sideColor,"#D9D9D9"),12),sideColor),
-                   c("1_Yes", "2_Yes", "3_Yes", "4_Yes", "5_Yes",
-                     "6_Yes", "7_Yes", "8_Yes",
-                     "9_Yes", "10_Yes", "11_Yes", "12_Yes", 
-                     "13_Yes", "14_Yes", "15_Yes",
-                     "16_Yes", "17_Yes", "18_Yes", "19_Yes", 
-                     "20_Yes", "21_Yes", "22_Yes",
-                     "X_Yes", "Y_Yes", "MT_Yes",
-                     "1_No", "2_No", "3_No", "4_No", "5_No",
-                     "6_No", "7_No", "8_No",
-                     "9_No", "10_No", "11_No", "12_No", 
-                     "13_No", "14_No", "15_No",
-                     "16_No", "17_No", "18_No", "19_No", 
-                     "20_No", "21_No", "22_No",
-                     "X_No", "Y_No", "MT_No"))
-
-p <- ggplot(outputDF) +
-  geom_point(aes(x = as.numeric(ChrStart), y = Statistic, color = Color), 
-             size = 1) +
-  facet_grid(cols = vars(ChrName), scale = "free") +
-  geom_hline(yintercept = 0) +
-  coord_cartesian(clip = "off") +
-  scale_color_manual(values = colors) +
-  xlab(NULL) +
-  ylab(expression(log[2]~"FC")) +
-  theme_minimal() +
-  theme(legend.position = "none",
-        axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank())
-
-
-ggsave(p, file = paste0("6. DiseaseMeta/Gene/", disease, "Manhattan.png"), 
-       width = 7, height = 2)
 
 
 

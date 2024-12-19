@@ -5,7 +5,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -19,6 +19,7 @@ load("Data/CleanData/geneInfo.RData")
 
 # Select gene and phenotype of interest
 selGene <- "3975" # LHX1
+selGene <- "64211" # LHX5
 selGene <- "2556" # GABRA3
 selGene <- "5630" # PRPH
 selPheno <- "Seizure"
@@ -78,7 +79,7 @@ p <- ggplot(plotDF) +
                                   face = "bold",
                                   size = 12))
 # Save plot
-ggsave(p, file = "7. PhenoMeta/Gene_Pheno/LHX1.png", width = 6, height = 4)
+ggsave(p, file = "7. PhenoMeta/Gene_Pheno/LHX5.png", width = 6, height = 4)
 
 
 

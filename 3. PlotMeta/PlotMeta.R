@@ -6,7 +6,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -36,23 +36,48 @@ colors <- setNames(c("#CB181D", "#2171B5"),
 colors <- setNames(c("#54278F", "#9E9AC8"),
                    c("Cases (n = 1362)", "Controls (n = 1026)"))
 
+bin_lower <- c(3:9,10,15,20)
+bin_upper <- c(3:9,14,19,Inf)
+test <- data.frame(table(plotData$n[plotData$group == "Cases (n = 1362)"]))
+test$Var1 <- as.numeric(as.character(test$Var1))
+binCount_case <- rep(NA, length(bin_lower))
+for (i in 1:length(bin_lower)){
+  binCount_case[i] <- sum(test$Freq[(test$Var1 >= bin_lower[i]) & (test$Var1 <= bin_upper[i])])
+  
+}
+
+test <- data.frame(table(plotData$n[plotData$group == "Controls (n = 1026)"]))
+test$Var1 <- as.numeric(as.character(test$Var1))
+binCount_control <- rep(NA, length(bin_lower))
+for (i in 1:length(bin_lower)){
+  binCount_control[i] <- sum(test$Freq[(test$Var1 >= bin_lower[i]) & (test$Var1 <= bin_upper[i])])
+  
+}
+
+plotDF <- data.frame(
+  Name = factor(rep(c("3", "4", "5", "6", "7", "8", "9", "10-14", "15-19", "\u2265 20"),2),
+                levels = c("3", "4", "5", "6", "7", "8", "9", "10-14", "15-19", "\u2265 20")),
+  Count = c(binCount_case, binCount_control),
+  Group = rep(c("Cases (n = 1362)", "Controls (n = 1026)"),each = 10)
+)
+
 # Make plot
-p <- ggplot(plotData) +
-  geom_bar(aes(x = n, fill = group),
-           width = 0.05) +
-  facet_grid(rows = vars(group)) +
-  scale_x_continuous(trans='log2') +
+p <- ggplot(plotDF) +
+  geom_bar(aes(x = Name, fill = Group, y = Count), color = "white",
+           stat = "identity", position = position_dodge()) +
+  #facet_grid(rows = vars(Group)) +
+  #scale_x_continuous(trans='log2') +
   #scale_y_continuous(trans='log2') +
   scale_fill_manual(values = colors) +
   labs(fill = NULL) +
   xlab("# Samples") +
   ylab("# Statistical Comparisons") +
   theme_minimal() +
-  theme(legend.position = c(0.85,0.9),
+  theme(legend.position = c(0.8,0.8),
         strip.text = element_blank())
 
 # Save plot
-ggsave(p, file = "3. PlotMeta/sampleBarchart.png", width = 5, height = 4)
+ggsave(p, file = "3. PlotMeta/sampleBarchart1.png", width = 4.5, height = 3)
 
 
 ################################################################################

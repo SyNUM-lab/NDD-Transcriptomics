@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # Set working directory
-setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -52,7 +52,7 @@ testDF <- data.frame(gene = gene,
 testDF <- inner_join(testDF, clusterDF, by = c("GO" = "ID"))
 
 # Select gene of interest
-selGene <- "3106" # cluster A: 45 HLA-A
+selGene <- "3106" # cluster A: 45 HLA-B
 selGene <- "6451" # cluster B: 36 SH3BGRL
 selGene <- "6622" # cluster C 39 SNCA
 selGene <- "351" # cluster D: 44 APP

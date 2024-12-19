@@ -4,13 +4,14 @@ cat("\014")
 gc()
 
 # Set working directory
-setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
 library(clusterProfiler)
 library(org.Hs.eg.db)
 library(meta)
+library(rrvgo)
 
 # Load data
 load("Data/CleanData/topList.RData")
@@ -31,14 +32,24 @@ firstup <- function(x) {
 # Find relevant GO terms: repeat for DS, DMD, RTT, and FX
 
 ################################################################################
+simMatrix <- calculateSimMatrix(
+  pvalues$ID,
+  orgdb="org.Hs.eg.db",
+  ont = "BP",
+  method = "Resnik"
+)
+save(simMatrix, file = "6. DiseaseMeta/GO/simMatrix.RData")
 
-# Select disease
+#==============================================================================#
+# DMD
+#==============================================================================#
+
 disease <- "DMD"
+
+# Select terms without DMD
 terms <- names(GOgenes)[unlist(lapply(GOgenes, function(x) sum(str_detect(x, "1756"))==0))]
 
-disease <- "FXS"
-terms <- names(GOgenes)[unlist(lapply(GOgenes, function(x) sum(str_detect(x, "2332"))==0))]
-
+# Select all DMD datasets
 samples <- metaData_all$ID[metaData_all$`Disease abbreviation` == disease]
 NES_fil <- NES[NES$ID %in% terms,c("ID", "Description", samples)]
 NES_fil[is.na(NES_fil)] <- 1
@@ -60,10 +71,155 @@ resultDF <- data.frame(ID = pvalues_fil$ID,
                        total = rowSums(test_p),
                        neg = rowSums(test_p & test_neg),
                        pos = rowSums(test_p & test_pos)
-                       )
+)
 
 # Get number of significant datasets with consistent direction of effect
 resultDF$value <- apply(resultDF[,4:5],1,max)
+
+
+# Select GO term with highest number of significant values
+reducedTerms <- reduceSimMatrix(simMatrix[rownames(simMatrix) %in% resultDF$ID,
+                                          colnames(simMatrix) %in% resultDF$ID],
+                                scores = sort(setNames(resultDF$value[resultDF$ID %in% rownames(simMatrix)],
+                                                  resultDF$ID[resultDF$ID %in% rownames(simMatrix)])),
+                                threshold=0.85,
+                                orgdb="org.Hs.eg.db")
+
+
+
+
+#==============================================================================#
+# DS
+#==============================================================================#
+
+disease <- "DS"
+
+# Select all DMD datasets
+samples <- metaData_all$ID[metaData_all$`Disease abbreviation` == disease]
+NES_fil <- NES[NES$ID %in% terms,c("ID", "Description", samples)]
+NES_fil[is.na(NES_fil)] <- 1
+pvalues_fil <- pvalues[pvalues$ID %in% terms,c("ID", "Description", samples)]
+pvalues_fil[is.na(pvalues_fil)] <- 1
+
+# number of significant datasets
+test_p <- pvalues_fil[,3:ncol(pvalues_fil)] < 0.05
+
+# Number of downregulated datasets
+test_neg <- NES_fil[,3:ncol(NES_fil)] < 0
+
+# Number for upregulated datasets
+test_pos <- NES_fil[,3:ncol(NES_fil)] > 0
+
+# Combine into dataframe
+resultDF <- data.frame(ID = pvalues_fil$ID,
+                       Description = pvalues_fil$Description,
+                       total = rowSums(test_p),
+                       neg = rowSums(test_p & test_neg),
+                       pos = rowSums(test_p & test_pos)
+)
+
+# Get number of significant datasets with consistent direction of effect
+resultDF$value <- apply(resultDF[,4:5],1,max)
+
+
+# Select GO term with highest number of significant values
+reducedTerms <- reduceSimMatrix(simMatrix[rownames(simMatrix) %in% resultDF$ID,
+                                          colnames(simMatrix) %in% resultDF$ID],
+                                scores = sort(setNames(resultDF$value[resultDF$ID %in% rownames(simMatrix)],
+                                                       resultDF$ID[resultDF$ID %in% rownames(simMatrix)])),
+                                threshold=0.85,
+                                orgdb="org.Hs.eg.db")
+
+
+
+#==============================================================================#
+# FXS
+#==============================================================================#
+
+disease <- "FXS"
+terms <- names(GOgenes)[unlist(lapply(GOgenes, function(x) sum(str_detect(x, "2332"))==0))]
+
+# Select all DMD datasets
+samples <- metaData_all$ID[metaData_all$`Disease abbreviation` == disease]
+NES_fil <- NES[NES$ID %in% terms,c("ID", "Description", samples)]
+NES_fil[is.na(NES_fil)] <- 1
+pvalues_fil <- pvalues[pvalues$ID %in% terms,c("ID", "Description", samples)]
+pvalues_fil[is.na(pvalues_fil)] <- 1
+
+# number of significant datasets
+test_p <- pvalues_fil[,3:ncol(pvalues_fil)] < 0.05
+
+# Number of downregulated datasets
+test_neg <- NES_fil[,3:ncol(NES_fil)] < 0
+
+# Number for upregulated datasets
+test_pos <- NES_fil[,3:ncol(NES_fil)] > 0
+
+# Combine into dataframe
+resultDF <- data.frame(ID = pvalues_fil$ID,
+                       Description = pvalues_fil$Description,
+                       total = rowSums(test_p),
+                       neg = rowSums(test_p & test_neg),
+                       pos = rowSums(test_p & test_pos)
+)
+
+# Get number of significant datasets with consistent direction of effect
+resultDF$value <- apply(resultDF[,4:5],1,max)
+
+
+# Select GO term with highest number of significant values
+reducedTerms <- reduceSimMatrix(simMatrix[rownames(simMatrix) %in% resultDF$ID,
+                                          colnames(simMatrix) %in% resultDF$ID],
+                                scores = sort(setNames(resultDF$value[resultDF$ID %in% rownames(simMatrix)],
+                                                       resultDF$ID[resultDF$ID %in% rownames(simMatrix)])),
+                                threshold=0.85,
+                                orgdb="org.Hs.eg.db")
+
+
+
+
+#==============================================================================#
+# RTT
+#==============================================================================#
+
+disease <- "RTT"
+
+# Select all DMD datasets
+samples <- metaData_all$ID[metaData_all$`Disease abbreviation` == disease]
+NES_fil <- NES[NES$ID %in% terms,c("ID", "Description", samples)]
+NES_fil[is.na(NES_fil)] <- 1
+pvalues_fil <- pvalues[pvalues$ID %in% terms,c("ID", "Description", samples)]
+pvalues_fil[is.na(pvalues_fil)] <- 1
+
+# number of significant datasets
+test_p <- pvalues_fil[,3:ncol(pvalues_fil)] < 0.05
+
+# Number of downregulated datasets
+test_neg <- NES_fil[,3:ncol(NES_fil)] < 0
+
+# Number for upregulated datasets
+test_pos <- NES_fil[,3:ncol(NES_fil)] > 0
+
+# Combine into dataframe
+resultDF <- data.frame(ID = pvalues_fil$ID,
+                       Description = pvalues_fil$Description,
+                       total = rowSums(test_p),
+                       neg = rowSums(test_p & test_neg),
+                       pos = rowSums(test_p & test_pos)
+)
+
+# Get number of significant datasets with consistent direction of effect
+resultDF$value <- apply(resultDF[,4:5],1,max)
+
+
+# Select GO term with highest number of significant values
+reducedTerms <- reduceSimMatrix(simMatrix[rownames(simMatrix) %in% resultDF$ID,
+                                          colnames(simMatrix) %in% resultDF$ID],
+                                scores = sort(setNames(resultDF$value[resultDF$ID %in% rownames(simMatrix)],
+                                                       resultDF$ID[resultDF$ID %in% rownames(simMatrix)])),
+                                threshold=0.85,
+                                orgdb="org.Hs.eg.db")
+
 
 
 ################################################################################
@@ -72,13 +228,14 @@ resultDF$value <- apply(resultDF[,4:5],1,max)
 
 ################################################################################
 
-disease <- "DMD"
+disease <- "FXS"
 
 # Select GO term: 
 
 # DMD
 GOterm <- "kidney development"
 GOterm <- "cardiac chamber development"
+GOterm <- "cell growth"
 
 # DS
 GOterm <- "detoxification"
@@ -91,6 +248,7 @@ GOterm <- "axonogenesis"
 # FXS:
 GOterm <- "positive regulation of interleukin-1 beta production"
 GOterm <- "cell-cell adhesion via plasma-membrane adhesion molecules"
+GOterm <- "positive regulation of phosphatidylinositol 3-kinase/protein kinase B signal transduction"
 
 # Make data frame for disease plotting
 pvalues[is.na(pvalues)] <- 1
@@ -139,6 +297,6 @@ p <- ggplot(plotDF[plotDF$Disease != "Other",]) +
         plot.title = element_text(face = "bold", size = 10, hjust = 0.5))
 
 # Save plot
-ggsave(p, file = paste0("6. DiseaseMeta/GO/", disease, "_GSEA_small2.png"), 
+ggsave(p, file = paste0("6. DiseaseMeta/GO/", disease, "_GSEA_small3.png"), 
        width = 2, height = 7)
 

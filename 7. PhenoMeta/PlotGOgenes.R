@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -139,7 +139,6 @@ p <- ggplot(data, aes(x=as.factor(id), y=abs(OR), fill=OR)) +       # Note that 
   coord_polar() + 
   geom_text(data=label_data, aes(x=id, y=abs(OR)+0.2, label=Symbol, hjust=hjust), color="black", fontface="bold",alpha=0.6, size=2.5, angle= label_data$angle, inherit.aes = FALSE )
 
-p
-
+# Save plot
 ggsave(p, file = "7. PhenoMeta/GO_Pheno/CircBar_Purkinje.png", width = 7, height = 5)
 
