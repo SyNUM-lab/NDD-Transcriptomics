@@ -25,7 +25,7 @@ mRes <- matrix(NA, nrow = length(files), ncol = length(selGenes))
 nCel <- matrix(NA, nrow = length(files), ncol = length(selGenes))
 for (f in 1:length(files)){
   # Read data
-  exprData <- read_rds(paste0("Data/BrainAtlas", files[f]))
+  exprData <- read_rds(paste0("Data/BrainAtlas/", files[f]))
   
   for (i in 1:length(selGenes)){
     # Get expression
@@ -73,14 +73,15 @@ p <- ggplot(plotDF) +
   #scale_color_gradient(low="#7570B3", high="#E7298A")+
   xlab(NULL) +
   ylab(NULL) +
-  theme_bw() +
+  theme_minimal() +
   labs(size = "Cell\nproportion", color = "Scaled mean\nexpression") +
   scale_x_discrete(labels = scales::label_wrap(18)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
-        legend.position = "none")
+        legend.position = "none",
+        strip.text = element_text(size = 12))
 
 # Save plot
-ggsave(p, file = "6. DiseaseMeta/scRNAseq/cellExpr1.png", width = 10, height = 3)
+ggsave(p, file = "6. DiseaseMeta/scRNAseq/cellExpr2.png", width = 10, height = 3)
 
 
 # Make legend plot

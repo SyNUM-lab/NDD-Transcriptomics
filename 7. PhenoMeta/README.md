@@ -5,4 +5,4 @@
 4. `Gene_Pheno.R` - Find genes that are associated with each genotype.
 5. `PlotGene.R` - Plot the logFCs of gene of interest.
 6. `PlotHypotoniaGenes.R` - Plot the logFCs of hypotonia-associated genes.
-7. `snRNAseq.R` - Re-analyse scRNA-seq data from Chen et al. (GSE153184) to find cell type-specific expression of Lhx1 in the cerebellum.
+7. `RegionExpression.R` - Get the brain region-specific expression profile of LHX1 and LHX5.
