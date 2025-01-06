@@ -2,7 +2,7 @@
 ![status](https://badgen.net/badge/Status/Complete/green)
 
 <h1 align="center">
-Decoding the Transcriptomics Landscape of Neurodevelopmental Disorders: A Meta-analysis
+Integrative analysis of 115 transcriptomic studies decodes the molecular landscape of neurodevelopmental disorders
 </h1>
 
 <p align="center">
