@@ -51,6 +51,18 @@ testDF <- data.frame(gene = gene,
                      GO = terms_ordered)
 testDF <- inner_join(testDF, clusterDF, by = c("GO" = "ID"))
 
+# Change cluster names
+testDF$Cluster[testDF$Cluster == 1] <- "A"
+testDF$Cluster[testDF$Cluster == 2] <- "B"
+testDF$Cluster[testDF$Cluster == 3] <- "A"
+testDF$Cluster[testDF$Cluster == 4] <- "D"
+testDF$Cluster[testDF$Cluster == 5] <- "C"
+
+testDF$gene[testDF$Cluster=="A"][which.max(testDF$value[testDF$Cluster == "A"])]
+testDF$gene[testDF$Cluster=="B"][which.max(testDF$value[testDF$Cluster == "B"])]
+testDF$gene[testDF$Cluster=="C"][which.max(testDF$value[testDF$Cluster == "C"])]
+testDF$gene[testDF$Cluster=="D"][which.max(testDF$value[testDF$Cluster == "D"])]
+
 # Select gene of interest
 selGene <- "3106" # cluster A: 45 HLA-B
 selGene <- "6451" # cluster B: 36 SH3BGRL
