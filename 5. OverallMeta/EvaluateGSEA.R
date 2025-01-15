@@ -431,13 +431,13 @@ plotDF$Cluster[plotDF$Cluster == 2] <- "B"
 plotDF$Cluster[plotDF$Cluster == 3] <- "A"
 plotDF$Cluster[plotDF$Cluster == 4] <- "D"
 plotDF$Cluster[plotDF$Cluster == 5] <- "C"
-plotDF$sign <- ifelse(plotDF$sign == -1, "-", "+")
+plotDF$sign <- ifelse(plotDF$sign == 1, "#", "0")
 
 
 # Make plot
 p <- ggplot(plotDF) +
   geom_tile(aes(x = key, y = Description, fill = value), height = 0.9) +
-  geom_text(data = plotDF[plotDF$value > -log10(0.05),], 
+  geom_text(data = plotDF[(plotDF$value > -log10(0.05)) & (plotDF$sign == "#"),], 
             aes(x = key, y = Description, label = sign), color = "white") +
   scale_fill_gradient(low = "#F7FCF5", high = "#238B45", limits = c(0,3),
                       trans = "pseudo_log", oob = scales::squish) +
