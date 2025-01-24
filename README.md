@@ -16,9 +16,9 @@ Integrative analysis of 115 transcriptomic studies decodes the molecular landsca
 <br>
 
 ## Our Study
-We combined the RNA-sequencing data of 115 distinct neurodevelopmental disorder datasets (Gene Expression Omnibus, GEO) to identify common, disease-specific, and phenotype-specific transcriptomic alterations.
+We combined 151 RNA sequencing data from 115 independent neurodevelopmental disorder studies (Gene Expression Omnibus, GEO) to identify common, disease-specific, and phenotype-specific transcriptomic alterations.
 ## Website
-You can interactively explore the data at <a href="https://jarnokoetsier.shinyapps.io/NDD-transcriptomic-atlas/">our website</a>
+You can interactively explore the data at <a href="https://SyNUM.shinyapps.io/NDD-transcriptomic-atlas/">our website</a>
 ## Software
 * `R version 4.3.1.`
 * `RStudio version 2024.04.0+735`
