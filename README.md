@@ -4,7 +4,8 @@
 <h1>
 Integrative analysis of 115 transcriptomic studies decodes the molecular landscape of neurodevelopmental disorders
 </h1>
-We combined 151 RNA sequencing data from 115 independent neurodevelopmental disorder studies (Gene Expression Omnibus, GEO) to identify common, disease-specific, and phenotype-specific transcriptomic alterations.
+We combined 151 RNA sequencing data from 115 independent neurodevelopmental disorder studies to identify common, disease-specific, and phenotype-specific transcriptomic alterations. 
+This repository includes the R scripts used for the integration and analysis of the datasets.
 
 ## Website
 You can interactively explore the data at <a href="https://SyNUM.shinyapps.io/NDD-transcriptomic-atlas/">our website</a>
