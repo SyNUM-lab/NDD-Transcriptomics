@@ -1,10 +1,10 @@
 ![licence](https://badgen.net/badge/Licence/CC-BY-4.0/purple)
 ![status](https://badgen.net/badge/Status/Complete/green)
 
-<h2 align="center">
+<h1 align="center">
 Integrative analysis of 115 transcriptomic studies decodes the molecular landscape of neurodevelopmental disorders
-</h2>
-
+</h1>
+<br>
 ## Our Study
 We combined 151 RNA sequencing data from 115 independent neurodevelopmental disorder studies (Gene Expression Omnibus, GEO) to identify common, disease-specific, and phenotype-specific transcriptomic alterations.
 ## Website
