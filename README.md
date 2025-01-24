@@ -1,7 +1,7 @@
 ![licence](https://badgen.net/badge/Licence/CC-BY-4.0/purple)
 ![status](https://badgen.net/badge/Status/Complete/green)
 
-<h1 align="center">
+<h1>
 Integrative analysis of 115 transcriptomic studies decodes the molecular landscape of neurodevelopmental disorders
 </h1>
 
