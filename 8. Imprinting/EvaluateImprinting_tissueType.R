@@ -6,8 +6,8 @@ gc()
 # set working directory
 setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
 load("Data/CleanData/geneInfo.RData")
-load("Data/CleanData/metaData_all.RData")
 load("Data/CleanData/topList.RData")
+metaData <- readxl::read_excel("Data/CleanData/MetaData_clean.xlsx")
 
 # Load packages
 library(tidyverse)
@@ -21,7 +21,6 @@ imprintDF <- imprintDF[imprintDF$Status %in% unique(imprintDF$Status)[c(1,2,3)],
 imprinted_genes1 <- imprintDF$Gene[!(imprintDF$Status == unique(imprintDF$Status)[3])]
 imprinted_genes1 <- imprinted_genes1[!is.na(imprinted_genes1)]
 imprinted_genes1 <- unique(as.character(geneInfo$GeneID[geneInfo$Symbol %in% imprinted_genes1]))
-
 
 up_genes <- list()
 down_genes <- list()
@@ -49,7 +48,7 @@ for (d in 1:length(both_genes)){
   # get non-imprinted genes
   nimprinted_genes <- setdiff(all_genes1, imprinted_genes)
   nimprinted_genes <- nimprinted_genes[!is.na(nimprinted_genes)]
-
+  
   # Evaluate upregulated genes:
   
   # get upregulated genes
@@ -141,88 +140,28 @@ plotDF_up$StudyID <- rownames(results_up)
 # Odds of differential expression:
 
 # Format data for plotting
-plotDF_both <- inner_join(plotDF_both, metaData_all, by = c("StudyID" = "ID"))
+plotDF_both <- inner_join(plotDF_both, metaData, by = c("StudyID" = "ID"))
+plotDF_both <- plotDF_both[plotDF_both$System != "Primary",]
 plotDF_both <- arrange(plotDF_both, by = OR)
 plotDF_both$x <- 1:nrow(plotDF_both)
 
 # Load random permutations
-load("8. Imprinting/PermResults1.RData")
+load("8. Imprinting/PermResults_invitro.RData")
+# Alternative: load("8. Imprinting/PermResults_noninvitro.RData")
 plotDF_perm <- gather(as.data.frame(results_both))
 plotDF_perm$x <- rep(1:nrow(results_both), ncol(results_both))
 
+
 # Make plot
 p <- ggplot() +
   geom_hline(yintercept = 0) +
   geom_line(data = plotDF_perm, aes(x = x, y = log2(value), group = key), 
-             alpha = 0.05, color = "#D94801") +
+            alpha = 0.05, color = "#D94801") +
   geom_point(data = plotDF_both, aes(x = x, y = log2(OR)), 
-            alpha = 1, color = "#525252", size = 0.8) +
-  geom_segment(data = plotDF_both, aes(x = x, xend = x, 
-                                       y = log2(Lower), yend = log2(Upper)), 
+             alpha = 1, color = "#525252", size = 0.8) +
+  geom_line(data = plotDF_both, aes(x = x, y = log2(OR), group = 1),
              alpha = 1, color = "#525252") +
-  coord_cartesian(ylim = c(-2.5,2.5)) +
-  ylab(expression(log[2]~"OR")) +
-  xlab("Datasets") +
-  theme_bw() +
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank())
-
-ggsave(p, file = "8. Imprinting/Figures/OR_imprinting.png", width = 8, height = 3)
-
-
-
-# Odds of downregulation:
-
-# Format data for plotting
-plotDF_down <- inner_join(plotDF_down, metaData_all, by = c("StudyID" = "ID"))
-plotDF_down <- arrange(plotDF_down, by = OR)
-plotDF_down$x <- 1:nrow(plotDF_down)
-
-# Load random permutations
-load("8. Imprinting/PermResults1.RData")
-plotDF_perm <- gather(as.data.frame(results_down))
-plotDF_perm$x <- rep(1:nrow(results_down), ncol(results_down))
-
-# Make plot
-p <- ggplot() +
-  geom_hline(yintercept = 0) +
-  geom_line(data = plotDF_perm, aes(x = x, y = log2(value), group = key), 
-            alpha = 0.05, color = "#D94801") +
-  geom_point(data = plotDF_down, aes(x = x, y = log2(OR)), 
-             alpha = 1, color = "#525252", size = 0.8) +
-  geom_segment(data = plotDF_down, aes(x = x, xend = x, 
-                                       y = log2(Lower), yend = log2(Upper)), 
-               alpha = 1, color = "#525252") +
-  coord_cartesian(ylim = c(-2.5,2.5)) +
-  ylab(expression(log[2]~"OR")) +
-  xlab("Datasets") +
-  theme_bw() +
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank())
-
-ggsave(p, file = "8. Imprinting/Figures/OR_imprinting_down.png", width = 8, height = 3)
-
-
-# Odds of upregulation:
-
-# Format data for plotting
-plotDF_up <- inner_join(plotDF_up, metaData_all, by = c("StudyID" = "ID"))
-plotDF_up <- arrange(plotDF_up, by = OR)
-plotDF_up$x <- 1:nrow(plotDF_up)
-
-# Load random permutations
-load("8. Imprinting/PermResults1.RData")
-plotDF_perm <- gather(as.data.frame(results_up))
-plotDF_perm$x <- rep(1:nrow(results_down), ncol(results_up))
-
-# Make plot
-p <- ggplot() +
-  geom_hline(yintercept = 0) +
-  geom_line(data = plotDF_perm, aes(x = x, y = log2(value), group = key), 
-            alpha = 0.05, color = "#D94801") +
-  geom_point(data = plotDF_up, aes(x = x, y = log2(OR)), 
-             alpha = 1, color = "#525252", size = 0.8) +
-  geom_segment(data = plotDF_up, aes(x = x, xend = x, 
+  geom_segment(data = plotDF_both, aes(x = x, xend = x, 
                                        y = log2(Lower), yend = log2(Upper)), 
                alpha = 1, color = "#525252") +
   coord_cartesian(ylim = c(-2.5,2.5)) +
@@ -233,14 +172,8 @@ p <- ggplot() +
         axis.ticks.x = element_blank())
 
 # Save plot
-ggsave(p, file = "8. Imprinting/Figures/OR_imprinting_up.png", width = 8, height = 3)
+ggsave(p, file = "8. Imprinting/Figures/OR_imprinting_invitro.png", width = 7, height = 3)
 
 # Calculate permutation P value
 sum(plotDF_both$OR > 1)
-sum(colSums(results_both > 1)>=123)
-
-sum(plotDF_down$OR > 1)
-sum(colSums(results_down > 1)>=112)
-
-sum(plotDF_up$OR > 1)
-sum(colSums(results_up > 1)>=111)
+sum(colSums(results_both > 1)>=99)

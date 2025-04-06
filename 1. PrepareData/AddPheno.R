@@ -15,6 +15,7 @@ setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
+library(RCy3)
 
 # Load in phenotype information
 phenoFiles <- list.files("Data/Phenotypes")
@@ -98,4 +99,20 @@ metaData_all <- inner_join(metaData, test, by = c("Disease" = "FullDisease"))
 save(metaData_all, file = "Data/CleanData/metaData_all.RData")
 
 
+# Make Disease-Phenotype network
 
+# prepare data
+Networkdf <- gather(phenoDF_complete)
+Networkdf$DisID <- rep(rownames(phenoDF_complete), ncol(phenoDF_complete))
+Networkdf <- Networkdf[Networkdf$value == "1",]
+Networkdf <- inner_join(Networkdf, unique(metaData[,2:3]), 
+                        by = c("DisID" = "Disease abbreviation"))
+Networkdf <- unique(Networkdf[,c("key", "Disease")])
+colnames(Networkdf) <- c("source", "target")
+
+# Export to cytoscape
+RCy3::createNetworkFromDataFrames(
+  edges = Networkdf,
+  title = "Dis-Pheno Network",
+  collection = "NDD meta analysis"
+)

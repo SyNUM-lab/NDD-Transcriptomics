@@ -86,7 +86,7 @@ reducedTerms <- reduceSimMatrix(simMatrix,
 save(reducedTerms, file = "5. overallMeta/GSEA/reducedTerms.RData")
 #==============================================================================#
 
-load("Analysis/overallMeta/GSEA/reducedTerms.RData")
+load("5. OverallMeta/GSEA/reducedTerms.RData")
 selTerms <- reducedTerms[,c("parent", "parentTerm", "score")]
 selTerms <- selTerms %>%
   group_by(parent) %>%
@@ -138,6 +138,9 @@ plotDF$Cluster[plotDF$Cluster == 2] <- "B"
 plotDF$Cluster[plotDF$Cluster == 3] <- "A"
 plotDF$Cluster[plotDF$Cluster == 4] <- "D"
 plotDF$Cluster[plotDF$Cluster == 5] <- "C"
+
+# NOTE: cluster 1 and 3 were combined given their similariy in logFCs and 
+# included genes
 
 # Make plot
 p <- ggplot(plotDF) +
@@ -243,6 +246,13 @@ immune_tissue <- c("White blood cell", "PBMC", "Leukocyte", "Lymphocyte",
 
 metaData_all$Neural <- ifelse(metaData_all$Tissue %in% neural_tissue,1,0)
 metaData_all$Immune <- ifelse(metaData_all$Tissue %in% immune_tissue,1,0)
+metaData_all$Other <- ifelse(metaData_all$Tissue %in% c(neural_tissue, immune_tissue),0,1)
+
+# Add model system info
+metaData_all$inVitro<- ifelse(metaData_all$System == "Primary",0,1)
+metaData_all$nonInVitro <- ifelse(metaData_all$System == "Primary",1,0)
+
+# sort meta data
 metaData_all <- arrange(metaData_all, by = ID)
 all(colnames(pvalues[,3:153]) == metaData_all$ID)
 
@@ -251,7 +261,7 @@ all(colnames(pvalues[,3:153]) == metaData_all$ID)
 # Calculate correlations with phenotype
 pvalues[is.na(pvalues)] <- 1
 NES[is.na(NES)] <- 0
-pheno <- as.data.frame(metaData_all[,13:26])
+pheno <- as.data.frame(metaData_all[,15:31])
 sig_p <- matrix(NA,nrow(pvalues), ncol(pheno))
 nes_p <- matrix(NA,nrow(pvalues), ncol(pheno))
 sig_sign <- matrix(NA,nrow(pvalues), ncol(pheno))
@@ -277,19 +287,19 @@ colnames(sig_p) <- colnames(pheno)
 colnames(nes_p) <- colnames(pheno)
 colnames(sig_sign) <- colnames(pheno)
 colnames(nes_sign) <- colnames(pheno)
-save(nes_p, sig_p, nes_sign, sig_sign, file = "5. overallMeta/GSEA/GO_pheno_correlations.RData")
+save(nes_p, sig_p, nes_sign, sig_sign, file = "5. overallMeta/GSEA/GO_pheno_correlations1.RData")
 #==============================================================================#
 
 # Load data
-load("5. overallMeta/GSEA/GO_pheno_correlations.RData")
+load("5. overallMeta/GSEA/GO_pheno_correlations1.RData")
 load("5. overallMeta/GSEA/terms_ordered.RData")
 
 # Plot correlations with signed GSEA P value:
 
 # Prepare data for plotting
-plotDF <- gather(as.data.frame(-log10(nes_p[terms_ordered,1:14])))
-plotDF$sign <- sign(gather(as.data.frame(sign(nes_sign[terms_ordered,1:14])))$value)
-plotDF$ID <- rep(terms_ordered,14)
+plotDF <- gather(as.data.frame(-log10(nes_p[terms_ordered,1:17])))
+plotDF$sign <- sign(gather(as.data.frame(sign(nes_sign[terms_ordered,1:17])))$value)
+plotDF$ID <- rep(terms_ordered,17)
 plotDF <- inner_join(plotDF, clusterDF, by = c("ID" = "ID"))
 plotDF <- inner_join(plotDF,pvalues[,1:2], by = c("ID" = "ID"))
 plotDF$Description <- firstup(plotDF$Description)
@@ -314,7 +324,10 @@ plotDF$key <- apply(plotDF, 1, FUN = function(x) {switch(x[1],
                      "Scoliosis" = "Scoliosis",
                      "Microcephaly" = "Microcephaly",
                      "Neural" = "Neural",
-                     "Immune" = "Immune"
+                     "Immune" = "Immune",
+                     "Other" = "Other",
+                     "inVitro" = "In vitro",
+                     "nonInVitro" = "Non-in vitro"
                      )})
 plotDF$key <- factor(plotDF$key, 
                      levels = c(             "Autism Spectrum Disorder",
@@ -331,7 +344,10 @@ plotDF$key <- factor(plotDF$key,
                                              "Scoliosis",
                                              "Microcephaly",
                                              "Neural",
-                                             "Immune"))
+                                             "Immune",
+                                             "Other",
+                                             "In vitro",
+                                             "Non-in vitro"))
 
 plotDF$adjp <- p.adjust(10^((plotDF$value)*-1), method = "fdr")
 plotDF$Cluster[plotDF$Cluster == 1] <- "A"
@@ -341,6 +357,20 @@ plotDF$Cluster[plotDF$Cluster == 4] <- "D"
 plotDF$Cluster[plotDF$Cluster == 5] <- "C"
 plotDF$sign <- ifelse(plotDF$sign == -1, "-", "+")
 
+plotDF$varGroup <- "Disease"
+plotDF$varGroup[plotDF$key %in% c("Autistic Behavior",
+                                  "Hypotonia",
+                                  "Gait Ataxia",
+                                  "Seizure",
+                                  "Intellectual Disability",
+                                  "Global Developmental Delay",
+                                  "Scoliosis",
+                                  "Microcephaly")] <- "Phenotype"
+plotDF$varGroup[plotDF$key %in% c("Neural",
+                                  "Immune",
+                                  "Other")] <- "Tissue"
+plotDF$varGroup[plotDF$key %in% c("In vitro", "Non-in vitro")] <- "System"
+
 # Make plot
 p <- ggplot(plotDF) +
   geom_tile(aes(x = key, y = Description, fill = value), height = 0.9) +
@@ -348,13 +378,16 @@ p <- ggplot(plotDF) +
             aes(x = key, y = Description, label = sign), color = "white") +
   scale_fill_gradient(low = "#FCFBFD", high = "#4A1486", limits = c(0,3),
                       trans = "pseudo_log", oob = scales::squish) +
-  facet_grid(rows = vars(Cluster), space = "free", scale = "free") +
+  facet_grid(rows = vars(Cluster), 
+             cols = vars(varGroup),
+             space = "free", scale = "free") +
   ggtitle("Signed") +
   ylab(NULL) +
   xlab(NULL) +
   labs(fill = expression(-log[10] ~ "P value  ")) +
   theme_bw() +
   theme(legend.position = "bottom",
+        strip.text.x = element_blank(),
         strip.text.y = element_text(color = "black"),
         axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
         plot.title = element_text(hjust = 0.5,
@@ -379,9 +412,9 @@ ggsave(gp, file = "5. overallMeta/GSEA/GSEAplot_all_cor_signed.png", width = 6, 
 # Plot correlations with unsigned GSEA P value:
 
 # Prepare data for plotting
-plotDF <- gather(as.data.frame(-log10(sig_p[terms_ordered,1:14])))
-plotDF$sign <- sign(gather(as.data.frame(sign(nes_sign[terms_ordered,1:14])))$value)
-plotDF$ID <- rep(terms_ordered,14)
+plotDF <- gather(as.data.frame(-log10(sig_p[terms_ordered,1:17])))
+plotDF$sign <- sign(gather(as.data.frame(sign(nes_sign[terms_ordered,1:17])))$value)
+plotDF$ID <- rep(terms_ordered,17)
 plotDF <- inner_join(plotDF, clusterDF, by = c("ID" = "ID"))
 plotDF <- inner_join(plotDF,pvalues[,1:2], by = c("ID" = "ID"))
 plotDF$Description <- firstup(plotDF$Description)
@@ -406,7 +439,10 @@ plotDF$key <- apply(plotDF, 1, FUN = function(x) {switch(x[1],
                                                          "Scoliosis" = "Scoliosis",
                                                          "Microcephaly" = "Microcephaly",
                                                          "Neural" = "Neural",
-                                                         "Immune" = "Immune"
+                                                         "Immune" = "Immune",
+                                                         "Other" = "Other",
+                                                         "inVitro" = "In vitro",
+                                                         "nonInVitro" = "Non-in vitro"
 )})
 plotDF$key <- factor(plotDF$key, 
                      levels = c(             "Autism Spectrum Disorder",
@@ -423,7 +459,10 @@ plotDF$key <- factor(plotDF$key,
                                              "Scoliosis",
                                              "Microcephaly",
                                              "Neural",
-                                             "Immune"))
+                                             "Immune",
+                                             "Other",
+                                             "In vitro",
+                                             "Non-in vitro"))
 
 plotDF$adjp <- p.adjust(10^((plotDF$value)*-1), method = "fdr")
 plotDF$Cluster[plotDF$Cluster == 1] <- "A"
@@ -433,6 +472,20 @@ plotDF$Cluster[plotDF$Cluster == 4] <- "D"
 plotDF$Cluster[plotDF$Cluster == 5] <- "C"
 plotDF$sign <- ifelse(plotDF$sign == 1, "#", "0")
 
+plotDF$varGroup <- "Disease"
+plotDF$varGroup[plotDF$key %in% c("Autistic Behavior",
+                                  "Hypotonia",
+                                  "Gait Ataxia",
+                                  "Seizure",
+                                  "Intellectual Disability",
+                                  "Global Developmental Delay",
+                                  "Scoliosis",
+                                  "Microcephaly")] <- "Phenotype"
+plotDF$varGroup[plotDF$key %in% c("Neural",
+                                  "Immune",
+                                  "Other")] <- "Tissue"
+plotDF$varGroup[plotDF$key %in% c("In vitro", "Non-in vitro")] <- "System"
+
 
 # Make plot
 p <- ggplot(plotDF) +
@@ -441,13 +494,16 @@ p <- ggplot(plotDF) +
             aes(x = key, y = Description, label = sign), color = "white") +
   scale_fill_gradient(low = "#F7FCF5", high = "#238B45", limits = c(0,3),
                       trans = "pseudo_log", oob = scales::squish) +
-  facet_grid(rows = vars(Cluster), space = "free", scale = "free") +
+  facet_grid(rows = vars(Cluster), 
+             cols = vars(varGroup),
+             space = "free", scale = "free") +
   ggtitle("Unsigned") +
   ylab(NULL) +
   xlab(NULL) +
   labs(fill = expression(-log[10] ~ "P value  ")) +
   theme_bw() +
   theme(legend.position = "bottom",
+        strip.text.x = element_blank(),
         strip.text.y = element_text(color = "black"),
         axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
         plot.title = element_text(hjust = 0.5,

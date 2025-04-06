@@ -71,7 +71,7 @@ p <- ggplot(plotDF) +
   scale_fill_manual(values = colors) +
   labs(fill = NULL) +
   xlab("# Samples") +
-  ylab("# Statistical Comparisons") +
+  ylab("# Datasets") +
   theme_minimal() +
   theme(legend.position = c(0.8,0.8),
         strip.text = element_blank())

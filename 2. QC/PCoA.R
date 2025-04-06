@@ -10,8 +10,8 @@ setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
 library(tidyverse)
 
 # Load data
-load("CleanData/topList.RData")
-load("CleanData/statistics_matrix.RData")
+load("Data/CleanData/topList.RData")
+load("Data/CleanData/statistics_matrix.RData")
 logFC_matrix[is.na(logFC_matrix)] <- 0
 pvalue_matrix[is.na(pvalue_matrix)] <- 1
 
@@ -88,10 +88,10 @@ immune_tissue <- c("White blood cell", "PBMC", "Leukocyte", "Lymphocyte",
 
 
 # Set colors
-plotPCA$color <- ifelse(plotPCA$Tissue %in% immune_tissue, "Immune cells", "Other")
-plotPCA$color[plotPCA$Tissue %in% neural_tissue] <- "Neural cells"
+plotPCA$color <- ifelse(plotPCA$Tissue %in% immune_tissue, "Immune tissue/cells", "Other")
+plotPCA$color[plotPCA$Tissue %in% neural_tissue] <- "Neural tissue/cells"
 colors <- setNames(c("#CB181D", "#2171B5", "#969696"),
-                   c("Immune cells", "Neural cells", "Other"))
+                   c("Immune tissue/cells", "Neural tissue/cells", "Other"))
 
 # Make plot
 p <- ggplot(plotPCA) +
@@ -195,3 +195,99 @@ ggsave(p, file = "2. QC/PCoA/PCoA_neural.png", width = 6, height = 5)
 
 
 
+################################################################################
+
+# Hierarchical clustering
+
+################################################################################
+
+# Clear workspace and console
+rm(list = ls())
+cat("\014") 
+gc()
+
+# set working directory
+setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+
+# Load packages
+library(tidyverse)
+library(ggdendro)
+
+# Load data
+load("2. QC/PCoA/corMatrix.RData")
+load("Data/CleanData/metaData_all.RData")
+geneInfo <- data.table::fread("Data/CleanData/Human.GRCh38.p13.annot.tsv")
+load("Data/CleanData/statistics_matrix.RData")
+logFC_matrix[is.na(logFC_matrix)] <- 0
+pvalue_matrix[is.na(pvalue_matrix)] <- 1
+
+# First, set cell type as color...
+
+# Neural cells
+neural_tissue <- c("Astrocyte", "BMEC; Astrocyte; Neuron", "Brain organoid",
+                   "Cerebral organoid", "Cortical organoid", "Cortical progenitor cell", 
+                   "Early neuroectoderm", "iPSC; Neuroepithelium; Neuron", "Late neuroectoderm",
+                   "Neuron", "NPC", "Telencephalic organoid", "Brain", "Cerebral granule cell",
+                   "Neuroepithelial stem cell"
+)
+
+# Immune cells
+immune_tissue <- c("White blood cell", "PBMC", "Leukocyte", "Lymphocyte", 
+                   "Lymphoblastoid cell", "B cell",
+                   "Blood", "Microglia cell", "Microglia-like cell")
+
+
+# Set colors
+metaData_all$color <- ifelse(metaData_all$Tissue %in% immune_tissue, "Immune tissue/cells", "Other")
+metaData_all$color[metaData_all$Tissue %in% neural_tissue] <- "Neural tissue/cells"
+
+# Second, set the disease as color...
+
+metaData_all$color2 <- metaData_all$Disease
+metaData_all$color2[!(metaData_all$color2 %in% c("Down Syndrome",
+                                               "Rett Syndrome",
+                                               "Fragile X Syndrome",
+                                               "Duchenne Muscular Dystrophy"))] <- "Other"
+
+# Perform hierarchical clustering
+model <- hclust(as.dist(1-corMatrix), method = "ward.D2")
+
+# Make dendrogram
+dend <- as.dendrogram(model)
+dend_data <- dendro_data(dend, type = "rectangle")
+dend_line <- dend_data$segments
+dend_point <- dend_data$labels
+dend_point <- inner_join(dend_point,metaData_all, by = c("label" = "ID"))
+
+# Set color values
+colors <- setNames(c("#CB181D", "#2171B5", "white",
+                     "#D95F02", "#7570B3", "#E7298A", "#E6AB02"),
+                   c("Immune tissue/cells", "Neural tissue/cells", "Other", 
+                     "Rett Syndrome", "Duchenne Muscular Dystrophy", 
+                     "Fragile X Syndrome", "Down Syndrome"))
+
+# Set order of colors
+dend_point$color <- factor(dend_point$color,
+                           levels = c("Immune tissue/cells", "Neural tissue/cells",
+                                      "Duchenne Muscular Dystrophy", "Down Syndrome",
+                                      "Fragile X Syndrome", "Rett Syndrome", 
+                                      "Other"))
+dend_point$color2 <- factor(dend_point$color2,
+                           levels = c("Immune tissue/cells", "Neural tissue/cells",
+                                      "Duchenne Muscular Dystrophy", "Down Syndrome",
+                                      "Fragile X Syndrome", "Rett Syndrome", 
+                                      "Other"))
+
+# Make plot
+p <- ggplot() + 
+  geom_segment(data = dend_line, aes(x = x, y = y, xend = xend, yend = yend))+
+  geom_tile(data = dend_point, aes(x, y-0.2, fill = color), 
+            height = 0.3, width = 1) +
+  geom_tile(data = dend_point, aes(x, y-0.55, fill = color2), 
+            height = 0.3, width = 1) +
+  scale_fill_manual(values  = colors) +
+  labs(fill = NULL) +
+  theme_void()
+
+# Save plot
+ggsave(p, file = "2. QC/PCoA/dendrogram.png", width = 8, height = 5)
