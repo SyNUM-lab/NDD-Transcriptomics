@@ -11,6 +11,6 @@ This repository includes the R scripts used for the integration and analysis of 
 You can interactively explore the data at <a href="https://SyNUM.shinyapps.io/NDD-transcriptomic-atlas/">our website</a>
 
 ## Software
-* `R version 4.3.1.`
-* `RStudio version 2024.04.0+735`
+* `R version 4.4.2.`
+* `RStudio version 2024.12.0+467`
 
