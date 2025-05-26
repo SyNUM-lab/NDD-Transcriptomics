@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -13,13 +13,13 @@ library(tidyverse)
 load("Data/CleanData/metaData_all.RData")
 
 # Make dataframe for plotting
-plotDF <- gather(metaData_all[,13:20])
+plotDF <- gather(metaData_all[,15:22])
 plotDF$ID <- rep(metaData_all$ID, 8)
 
 # Cluster the studies
-ClusMat <- as.matrix(metaData_all[,13:20])
+ClusMat <- as.matrix(metaData_all[,15:22])
 rownames(ClusMat) <- metaData_all$ID
-colnames(ClusMat) <- colnames(metaData_all[,13:20])
+colnames(ClusMat) <- colnames(metaData_all[,15:22])
 model_study <- hclust(dist(ClusMat,
                            method = "euclidean"), "ward.D2")
 study_ordered <- model_study$labels[model_study$order]
@@ -58,4 +58,8 @@ p <- ggplot(plotDF) +
 # Save plot
 ggsave(p, file = "7. PhenoMeta/PhenoOverview/PhenotypeOverview.png", width = 7, height = 4)
 
-
+# Export figure source data
+sourceData <- metaData_all[,c(1,15:22)]
+colnames(sourceData) <- c("Dataset", colnames(sourceData[,2:ncol(sourceData)]))
+write.csv(sourceData, file = "7. PhenoMeta/SourceData_Figure4A.csv",
+          row.names = FALSE, quote = FALSE)

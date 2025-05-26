@@ -7,7 +7,7 @@ cat("\014")
 gc()
 
 # Set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -100,3 +100,9 @@ legend <- cowplot::get_legend(legendPlot)
 # Save legend
 ggsave(legend, file = "6. DiseaseMeta/scRNAseq/legend1.png", width = 8, height = 8)
 
+
+# Export figure source data
+sourceData <- plotDF[,c("key", "cluster", "Group", "value", "nCel")]
+colnames(sourceData) <- c("Gene", "CellType", "Cluster", "Expr", "Proportion")
+write.csv(sourceData, file = "6. DiseaseMeta/SourceData_Figure3C.csv",
+          row.names = FALSE, quote = FALSE)

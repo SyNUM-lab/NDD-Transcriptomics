@@ -6,7 +6,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -65,9 +65,6 @@ plotDF <- data.frame(
 p <- ggplot(plotDF) +
   geom_bar(aes(x = Name, fill = Group, y = Count), color = "white",
            stat = "identity", position = position_dodge()) +
-  #facet_grid(rows = vars(Group)) +
-  #scale_x_continuous(trans='log2') +
-  #scale_y_continuous(trans='log2') +
   scale_fill_manual(values = colors) +
   labs(fill = NULL) +
   xlab("# Samples") +
@@ -79,6 +76,11 @@ p <- ggplot(plotDF) +
 # Save plot
 ggsave(p, file = "3. PlotMeta/sampleBarchart1.png", width = 4.5, height = 3)
 
+# Export figure source data
+sourceData <- plotDF
+colnames(sourceData) <- c("nSamples", "nDatasets", "Color")
+write.csv(sourceData, file = "3. PlotMeta/SourceData_Figure1B.csv",
+          row.names = FALSE, quote = FALSE)
 
 ################################################################################
 
@@ -130,3 +132,9 @@ p <- ggplot(data, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=category)) +
 # Save plot
 ggsave(p, file = "3. PlotMeta/DiseasePiechart.png", width = 6, height = 5)
 
+
+# Export figure source data
+sourceData <- data[,c("category", "count")]
+colnames(sourceData) <- c("Disease", "Count")
+write.csv(sourceData, file = "3. PlotMeta/SourceData_Figure1C.csv",
+          row.names = FALSE, quote = FALSE)

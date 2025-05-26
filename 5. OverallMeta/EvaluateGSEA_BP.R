@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # Set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -189,6 +189,11 @@ legend <- cowplot::get_legend(legendPlot)
 ggsave(legend, file = "5. overallMeta/GSEA/GSEAplot_all_legend.png", width = 4, height = 4)
 
 
+# Export figure source data
+sourceData <- plotDF[,c("key", "ID", "Name", "Cluster", "value", "NES")]
+colnames(sourceData) <- c("Dataset", "GOID", "GOname", "Cluster", "pvalue", "NES")
+write.csv(sourceData, file = "5. overallMeta/SourceData_Figure2A.csv",
+          row.names = FALSE, quote = FALSE)
 
 ################################################################################
 

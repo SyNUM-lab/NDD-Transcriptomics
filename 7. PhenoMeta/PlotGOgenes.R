@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -142,3 +142,9 @@ p <- ggplot(data, aes(x=as.factor(id), y=abs(OR), fill=OR)) +       # Note that 
 # Save plot
 ggsave(p, file = "7. PhenoMeta/GO_Pheno/CircBar_Purkinje.png", width = 7, height = 5)
 
+
+# Export figure source data
+sourceData <- data[,c("Symbol", "OR")]
+colnames(sourceData) <- c("Gene", "OR")
+write.csv(sourceData, file = "7. PhenoMeta/SourceData_Figure4C.csv",
+          row.names = FALSE, quote = FALSE)

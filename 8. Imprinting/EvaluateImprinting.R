@@ -169,6 +169,18 @@ p <- ggplot() +
 
 ggsave(p, file = "8. Imprinting/Figures/OR_imprinting.png", width = 8, height = 3)
 
+# Export figure source data
+sourceData <- plotDF_both[,c("StudyID", "OR", "Upper", "Lower")]
+colnames(sourceData) <- c("Dataset", "OR", "Upper", "Lower")
+write.csv(sourceData, file = "8. Imprinting/SourceData_Figure2D_imprintedGenes.csv",
+          row.names = FALSE, quote = FALSE)
+
+
+sourceData <- plotDF_perm[,c("key", "x", "value")]
+colnames(sourceData) <- c("Permutation","Dataset", "OR")
+sourceData$Permutation <- paste0("Permutation ", substr(sourceData$Permutation,2,2))
+write.csv(sourceData, file = "8. Imprinting/SourceData_Figure2D_permutations.csv",
+          row.names = FALSE, quote = FALSE)
 
 
 # Odds of downregulation:

@@ -5,7 +5,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -82,6 +82,11 @@ p <- ggplot(plotDF) +
 ggsave(p, file = "7. PhenoMeta/Gene_Pheno/LHX5.png", width = 6, height = 4)
 
 
+# Export figure source data
+sourceData <- plotDF[,c("Dataset", "logFC", "Lower", "Upper", "Pheno")]
+colnames(sourceData) <- c("Dataset", "logFC", "Lower", "Upper", "Phenotype")
+write.csv(sourceData, file = "7. PhenoMeta/SourceData_Figure4D.csv",
+          row.names = FALSE, quote = FALSE)
 
 
 # Make an alternative plot

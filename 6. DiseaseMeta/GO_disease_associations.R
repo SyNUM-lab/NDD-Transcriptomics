@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # Set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -228,7 +228,7 @@ reducedTerms <- reduceSimMatrix(simMatrix[rownames(simMatrix) %in% resultDF$ID,
 
 ################################################################################
 
-disease <- "FXS"
+disease <- "DMD"
 
 # Select GO term: 
 
@@ -300,3 +300,8 @@ p <- ggplot(plotDF[plotDF$Disease != "Other",]) +
 ggsave(p, file = paste0("6. DiseaseMeta/GO/", disease, "_GSEA_small3.png"), 
        width = 2, height = 7)
 
+
+sourceData <- plotDF[plotDF$Disease != "Other",c("StudyID", "Disease abbreviation", "Pvalue", "NES")]
+colnames(sourceData) <- c("Dataset", "Disease", "Pvalue", "NES")
+write.csv(sourceData, file = "6. DiseaseMeta/SourceData_Figure3D_DMD_2.csv",
+          row.names = FALSE, quote = FALSE)

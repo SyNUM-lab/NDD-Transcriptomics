@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -75,7 +75,7 @@ save(outputDF, file = "6. DiseaseMeta/Gene/outputDF_FXS.RData")
 
 ################################################################################
 
-disease <- "RTT"
+disease <- "DMD"
 
 # Load data
 load(paste0("6. DiseaseMeta/Gene/outputDF_",disease,".RData"))
@@ -181,6 +181,11 @@ ggsave(p, file = paste0("6. DiseaseMeta/Gene/", disease, "horizontal.png"),
        height = 2, width = 6.5)
 
 
+# Export figure source data
+sourceData <- plotDF[plotDF$Disease != "Other", c("StudyID", "Disease abbreviation","logFC", "Upper", "Lower")]
+colnames(sourceData) <- c("Dataset", "Disease", "logFC", "Upper", "Lower")
+write.csv(sourceData, file = "6. DiseaseMeta/SourceData_Figure3B_DMD.csv",
+          row.names = FALSE, quote = FALSE)
 
 
 ################################################################################
@@ -189,7 +194,7 @@ ggsave(p, file = paste0("6. DiseaseMeta/Gene/", disease, "horizontal.png"),
 
 ################################################################################
 
-disease <- "DS"
+disease <- "DMD"
 
 # Load data
 load(paste0("6. DiseaseMeta/Gene/outputDF_",disease,".RData"))
@@ -281,6 +286,11 @@ ggsave(p, file = paste0("6. DiseaseMeta/Gene/", disease, "Manhattan.png"),
 
 
 
+# Export figure source data
+sourceData <- outputDF[,c("Gene", "Symbol", "Statistic", "ChrName", "ChrStart")]
+colnames(sourceData) <- c("EntrezID", "GeneSymbol", "tstatistic", "Chromosome", "Position")
+write.csv(sourceData, file = "6. DiseaseMeta/SourceData_Figure3A_DMD.csv",
+          row.names = FALSE, quote = FALSE)
 
 
 

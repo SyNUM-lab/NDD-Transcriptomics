@@ -7,7 +7,7 @@ cat("\014")
 gc()
 
 # Set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Capitalize first letter
 firstup <- function(x) {
@@ -108,6 +108,14 @@ p <- ggplot(outputDF) +
 ggsave(p, file = "7. PhenoMeta/RegionExpression/LHX1_HPA.png",
      width = 7, height = 3.5)
 
+
+
+# Export figure source data
+sourceData <- outputDF[,c("Dataset", "BrainRegion", "Expression")]
+sourceData$Dataset <- str_remove(sourceData$Dataset, "\n")
+sourceData$BrainRegion <- str_remove(sourceData$BrainRegion, "\n")
+write.csv(sourceData, file = "7. PhenoMeta/SourceData_Figure4E.csv",
+          row.names = FALSE, quote = FALSE)
 
 #==============================================================================#
 # LHX5
@@ -222,6 +230,13 @@ p <- ggplot(plotDF) +
 
 ggsave(p, file = "7. PhenoMeta/RegionExpression/LHX1_UMAP_CBV_HBA.png",
        width = 6, height = 6)
+
+
+# Export figure source data
+sourceData <- plotDF[,c("UMAP_1", "UMAP_2", "Gene")]
+colnames(sourceData) <- c("UMAP1", "UMAP2", "Expr")
+write.csv(sourceData, file = "7. PhenoMeta/SourceData_Figure4F.csv",
+          row.names = FALSE, quote = FALSE)
 
 #==============================================================================#
 # Purkinje cell markers expression: RORA, HS6ST3

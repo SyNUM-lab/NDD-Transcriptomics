@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # Set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -114,6 +114,12 @@ p <- ggplot(plotDF) +
 # Save plot
 ggsave(p, file = paste0("5. OverallMeta/Gene/",geneName, "_logFCs.png"), width = 9, height = 2)
 
+
+# Export figure source data
+sourceData <- plotDF[,c("StudyID", "logFC", "Upper", "Lower")]
+colnames(sourceData) <- c("Dataset", "logFC", "Upper", "Lower")
+write.csv(sourceData, file = "5. OverallMeta/SourceData_Figure2B_APP.csv",
+          row.names = FALSE, quote = FALSE)
 
 ################################################################################
 

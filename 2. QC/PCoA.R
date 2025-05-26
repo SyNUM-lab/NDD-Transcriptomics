@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -39,7 +39,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -111,6 +111,7 @@ p <- ggplot(plotPCA) +
 # Save plot
 ggsave(p, file = "2. QC/PCoA/PCoA.png", width = 6, height = 5)
 
+
 ################################################################################
 
 # Plot individual genes
@@ -131,10 +132,10 @@ pvalue_wc <- rep(NA, nrow(pvalue_rank))
 statistic_wc <- rep(NA, nrow(pvalue_rank))
 
 for (r in 1:nrow(pvalue_rank)){
-  pvalue_wc[r] <- wilcox.test(pvalue_rank[r,plotPCA$studyID[plotPCA$color == "Immune cells"]],
-                             pvalue_rank[r,plotPCA$studyID[plotPCA$color == "Neural cells"]])$p.value
+  pvalue_wc[r] <- wilcox.test(pvalue_rank[r,plotPCA$studyID[plotPCA$color == "Immune tissue/cells"]],
+                             pvalue_rank[r,plotPCA$studyID[plotPCA$color == "Neural tissue/cells"]])$p.value
   
-  statistic_wc[r] <- median(pvalue_rank[r,plotPCA$studyID[plotPCA$color == "Immune cells"]]) - median( pvalue_rank[r,plotPCA$studyID[plotPCA$color == "Neural cells"]])
+  statistic_wc[r] <- median(pvalue_rank[r,plotPCA$studyID[plotPCA$color == "Immune tissue/cells"]]) - median( pvalue_rank[r,plotPCA$studyID[plotPCA$color == "Neural tissue/cells"]])
 }
 names(pvalue_wc) <- rownames(pvalue_rank)
 names(statistic_wc) <- rownames(pvalue_rank)
@@ -143,11 +144,11 @@ names(statistic_wc) <- rownames(pvalue_rank)
 # Find gene that is associated with immune cells
 head(sort(pvalue_wc[statistic_wc > 0]),20)
 selGene <- "6977"
-plotPCA$Expr <- pvalue_rank[selGene,]
+plotPCA$TRGV4 <- pvalue_rank[selGene,]
 
 # Make plot
 p <- ggplot(plotPCA) +
-  geom_point(aes(x = PC1, y = PC2, color = Expr),
+  geom_point(aes(x = PC1, y = PC2, color = TRGV4),
              size = 2.5) +
   theme_void() +
   scale_color_gradient(low = "#F0F0F0", high = "#EF3B2C") +
@@ -170,11 +171,11 @@ ggsave(p, file = "2. QC/PCoA/PCoA_immune.png", width = 6, height = 5)
 # Find gene that is associated with neural cells
 head(sort(pvalue_wc[statistic_wc < 0]),20)
 selGene <- "1137"
-plotPCA$Expr <- pvalue_rank[selGene,]
+plotPCA$CHRNA4 <- pvalue_rank[selGene,]
 
 # Make plot
 p <- ggplot(plotPCA) +
-  geom_point(aes(x = PC1, y = PC2, color = Expr),
+  geom_point(aes(x = PC1, y = PC2, color = CHRNA4),
              size = 2.5) +
   theme_void() +
   scale_color_gradient(low = "#F0F0F0", high = "#4292C6") +
@@ -193,7 +194,11 @@ p <- ggplot(plotPCA) +
 # Save plot
 ggsave(p, file = "2. QC/PCoA/PCoA_neural.png", width = 6, height = 5)
 
-
+# Export figure source data
+sourceData <- plotPCA[,c("studyID","PC1", "PC2", "color", "TRGV4", "CHRNA4")]
+colnames(sourceData) <- c("Dataset","PCoA1", "PCoA2", "Tissue", "TRGV4", "CHRNA4")
+write.csv(sourceData, file = "2. QC/SourceData_Figure1D.csv",
+          row.names = FALSE, quote = FALSE)
 
 ################################################################################
 

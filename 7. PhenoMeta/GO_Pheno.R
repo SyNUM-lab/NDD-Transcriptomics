@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -127,6 +127,12 @@ p <- ggplot(plotDF) +
 # Save plot
 ggsave(p, file = paste0("7. PhenoMeta/GO_Pheno/", selName, ".png"), width = 6, height = 4)
 
+
+# Export figure source data
+sourceData <- plotDF[,c("Dataset","Pheno", "Pvalue", "NES")]
+colnames(sourceData) <- c("Dataset","Phenotype", "Pvalue", "NES")
+write.csv(sourceData, file = "7. PhenoMeta/SourceData_Figure4B.csv",
+          row.names = FALSE, quote = FALSE)
 
 ################################################################################
 
