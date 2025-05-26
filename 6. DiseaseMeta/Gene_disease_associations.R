@@ -291,9 +291,3 @@ sourceData <- outputDF[,c("Gene", "Symbol", "Statistic", "ChrName", "ChrStart")]
 colnames(sourceData) <- c("EntrezID", "GeneSymbol", "tstatistic", "Chromosome", "Position")
 write.csv(sourceData, file = "6. DiseaseMeta/SourceData_Figure3A_DMD.csv",
           row.names = FALSE, quote = FALSE)
-
-
-
-
-
-  

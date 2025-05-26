@@ -123,6 +123,6 @@ p <- ggplot(plotDF_alt) +
                                   face = "bold",
                                   size = 12))
 
-
+# Save plot
 ggsave(p, file = "7. PhenoMeta/Gene_Pheno/LHX1_alt.png", width = 6, height = 4)
 

@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # Set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -74,6 +74,7 @@ for (i in 1:length(topList)){
   
 }
 
+# Save GSEA results
 save(pvalues, NES, file = "4. GSEA/GSEA_CHR/GSEAresults_CHR.RData")
 
 # Calculate signed P value
@@ -115,9 +116,11 @@ p1 <- ggplot(barPlot) +
   theme_bw() +
   theme(legend.position = "none")
 
+# Save plot
 ggsave(p1, file = "4. GSEA/GSEA_CHR/Chr_bar.png",
        width = 4, height = 4)
 
+# Prepare data
 plotDF <- gather(pvalues1)
 plotDF$Chr <- rep(rownames(pvalues1), ncol(pvalues1))
 plotDF$Sig <- "Unchanged"
@@ -125,14 +128,15 @@ plotDF$Sig[(plotDF$value < log10(0.05))] <- "Downregulated"
 plotDF$Sig[(plotDF$value > -log10(0.05))] <- "Upregulated"
 plotDF$Chr <- factor(plotDF$Chr, levels = levels(statDF$Chr))
 
-# colors <- setNames(c("#000072", "#BDBDBD", "#CB181D"),
-#                    c("Downregulated", "Unchanged", "Upregulated"))
-
+# Set colors
 colors <- setNames(c("#6BAED6", "#BDBDBD", "#FB6A4A"),
                    c("Downregulated", "Unchanged", "Upregulated"))
 
+# Set alphas
 alphas <- setNames(c(0.6,0.1,0.6),
                    c("Downregulated", "Unchanged", "Upregulated"))
+
+# Make plot
 p2 <- ggplot(plotDF) +
   geom_jitter(aes(y = Chr, x = value, color = Sig, alpha = Sig), height = 0.2) +
   scale_color_manual(values = colors) +
@@ -142,6 +146,7 @@ p2 <- ggplot(plotDF) +
   theme_bw() +
   theme(legend.position  ="none")
 
+# Save plot
 ggsave(p2, file = "4. GSEA/GSEA_CHR/Chr_point.png",
        width = 6, height = 4)
 

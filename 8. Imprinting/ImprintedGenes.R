@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # Set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -23,7 +23,6 @@ load("Data/CleanData/statistics_matrix.RData")
 load("Data/CleanData/metaData_all.RData")
 load("Data/CleanData/geneInfo.RData")
 geneInfo$GeneID <- as.character(geneInfo$GeneID)
-
 
 # Get upper and low C.I.
 logFC_matrix[is.na(logFC_matrix)] <- 0

@@ -100,7 +100,6 @@ legend <- cowplot::get_legend(legendPlot)
 # Save legend
 ggsave(legend, file = "6. DiseaseMeta/scRNAseq/legend1.png", width = 8, height = 8)
 
-
 # Export figure source data
 sourceData <- plotDF[,c("key", "cluster", "Group", "value", "nCel")]
 colnames(sourceData) <- c("Gene", "CellType", "Cluster", "Expr", "Proportion")

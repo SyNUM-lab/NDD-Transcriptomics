@@ -146,7 +146,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("E:/RTTproject/GEOData/Analysis")
+setwd("D:/RTTproject/GEOData/Analysis")
 
 # Load data
 load("4. GSEA/GOgenes_BP_ENTREZID_Hs.RData")

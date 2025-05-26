@@ -301,6 +301,7 @@ ggsave(p, file = paste0("6. DiseaseMeta/GO/", disease, "_GSEA_small3.png"),
        width = 2, height = 7)
 
 
+# Export figure source data
 sourceData <- plotDF[plotDF$Disease != "Other",c("StudyID", "Disease abbreviation", "Pvalue", "NES")]
 colnames(sourceData) <- c("Dataset", "Disease", "Pvalue", "NES")
 write.csv(sourceData, file = "6. DiseaseMeta/SourceData_Figure3D_DMD_2.csv",

@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 load("Data/CleanData/geneInfo.RData")
 load("Data/CleanData/metaData_all.RData")
 load("Data/CleanData/topList.RData")

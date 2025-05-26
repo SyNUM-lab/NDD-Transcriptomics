@@ -4,7 +4,7 @@ cat("\014")
 gc()
 
 # Set working directory
-setwd("E:/RTTproject/GEOData/NDD-Transcriptomics")
+setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
 
 # Load packages
 library(tidyverse)
@@ -99,6 +99,7 @@ p1 <- ggplot(plotDF) +
   theme_bw() +
   theme(legend.position = "none") 
 
+# Save plot
 ggsave(p2, file = "5. OverallMeta/Glycolysis/glycolysis1.png", width = 3, height = 5)
 
 
@@ -111,4 +112,5 @@ p2 <- ggplot(resultDF) +
   xlab("Count") +
   theme_bw()
 
+# Save plot
 ggsave(p2, file = "5. OverallMeta/Glycolysis/glycolysis2.png", width = 3, height = 5)

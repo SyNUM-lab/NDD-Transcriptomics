@@ -5,6 +5,8 @@ gc()
 
 # set working directory
 setwd("D:/RTTproject/GEOData/NDD-Transcriptomics")
+
+# Load data
 load("Data/CleanData/geneInfo.RData")
 load("Data/CleanData/metaData_all.RData")
 load("Data/CleanData/topList.RData")
