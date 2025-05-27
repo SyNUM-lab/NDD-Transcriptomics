@@ -6,7 +6,7 @@ Integrative analysis of 115 transcriptomic studies decodes the molecular landsca
 </h1>
 We combined 151 RNA sequencing data from 115 independent neurodevelopmental disorder studies to identify common, disorder-associated, and phenotype-specific transcriptomic alterations. 
 This repository includes the R scripts used for the integration and analysis of these datasets.
-
+<br>
 ![ProjectOverview](/1.%20PrepareData/ProjectOverview.jpg?raw=true)
 
 ## Website
